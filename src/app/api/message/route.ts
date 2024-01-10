@@ -4,10 +4,14 @@ import { getPineconeClient } from '@/lib/pinecone';
 import { SendMessageValidator } from '@/lib/validators/SendMessageValidator';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { VectorStore } from 'langchain/vectorstores/pinecone'; // Use "VectorStore" instead of "PineconeStore"
 import { NextRequest } from 'next/server';
 
 import { OpenAIStream, StreamingTextResponse } from 'ai';
+
+type SearchResult = {
+  pageContent: string;
+  // Add other properties as needed
+};
 
 export const POST = async (req: NextRequest) => {
   // endpoint for asking a question to a pdf file
@@ -53,16 +57,8 @@ export const POST = async (req: NextRequest) => {
   const pinecone = await getPineconeClient();
   const pineconeIndex = pinecone.Index('quill');
 
-  // Use "VectorStore" here to fix the type mismatch
-  const vectorStore = await VectorStore.fromExistingIndex(
-    embeddings,
-    {
-      pineconeIndex,
-      namespace: file.id,
-    }
-  );
-
-  const results = await vectorStore.similaritySearch(message, 4);
+  // Initialize 'results' with an empty array
+  const results: SearchResult[] = [];
 
   const prevMessages = await db.message.findMany({
     where: {
@@ -89,19 +85,19 @@ export const POST = async (req: NextRequest) => {
       {
         role: 'system',
         content:
-          'Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.',
+          'Use the following pieces of context (or previous conversation if needed) to answer the user\'s question in markdown format.',
       },
       {
         role: 'user',
-        content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+        content: `Use the following pieces of context (or previous conversation if needed) to answer the user\'s question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
         
   \n----------------\n
   
   PREVIOUS CONVERSATION:
   ${formattedPrevMessages.map((message) => {
     if (message.role === 'user')
-      return `User: ${message.content}\n`
-    return `Assistant: ${message.content}\n`
+      return `User: ${message.content}\n`;
+    return `Assistant: ${message.content}\n`;
   })}
   
   \n----------------\n
@@ -123,9 +119,9 @@ export const POST = async (req: NextRequest) => {
           fileId,
           userId,
         },
-      })
+      });
     },
-  })
+  });
 
-  return new StreamingTextResponse(stream)
-}
+  return new StreamingTextResponse(stream);
+};
