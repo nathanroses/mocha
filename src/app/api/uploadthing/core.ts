@@ -1,48 +1,48 @@
-import { db } from '@/db';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { db } from '@/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import {
   createUploadthing,
   type FileRouter,
-} from 'uploadthing/next';
+} from 'uploadthing/next'
 
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { getPineconeClient } from '@/lib/pinecone';
-import { getUserSubscriptionPlan } from '@/lib/stripe';
-import { PLANS } from '@/config/stripe';
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { PineconeStore } from 'langchain/vectorstores/pinecone'
+import { getPineconeClient } from '@/lib/pinecone'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
+import { PLANS } from '@/config/stripe'
 
-const f = createUploadthing();
+const f = createUploadthing()
 
 const middleware = async () => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser(); // Await the promise
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
 
-  if (!user || !user.id) throw new Error('Unauthorized');
+  if (!user || !user.id) throw new Error('Unauthorized')
 
-  const subscriptionPlan = await getUserSubscriptionPlan();
+  const subscriptionPlan = await getUserSubscriptionPlan()
 
-  return { subscriptionPlan, userId: user.id };
-};
+  return { subscriptionPlan, userId: user.id }
+}
 
 const onUploadComplete = async ({
   metadata,
   file,
 }: {
-  metadata: Awaited<ReturnType<typeof middleware>>;
+  metadata: Awaited<ReturnType<typeof middleware>>
   file: {
-    key: string;
-    name: string;
-    url: string;
-  };
+    key: string
+    name: string
+    url: string
+  }
 }) => {
   const isFileExist = await db.file.findFirst({
     where: {
       key: file.key,
     },
-  });
+  })
 
-  if (isFileExist) return;
+  if (isFileExist) return
 
   const createdFile = await db.file.create({
     data: {
@@ -52,31 +52,31 @@ const onUploadComplete = async ({
       url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
       uploadStatus: 'PROCESSING',
     },
-  });
+  })
 
   try {
     const response = await fetch(
       `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`
-    );
+    )
 
-    const blob = await response.blob();
+    const blob = await response.blob()
 
-    const loader = new PDFLoader(blob);
+    const loader = new PDFLoader(blob)
 
-    const pageLevelDocs = await loader.load();
+    const pageLevelDocs = await loader.load()
 
-    const pagesAmt = pageLevelDocs.length;
+    const pagesAmt = pageLevelDocs.length
 
-    const { subscriptionPlan } = metadata;
-    const { isSubscribed } = subscriptionPlan;
+    const { subscriptionPlan } = metadata
+    const { isSubscribed } = subscriptionPlan
 
     const isProExceeded =
       pagesAmt >
-      PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf;
+      PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
     const isFreeExceeded =
       pagesAmt >
       PLANS.find((plan) => plan.name === 'Free')!
-        .pagesPerPdf;
+        .pagesPerPdf
 
     if (
       (isSubscribed && isProExceeded) ||
@@ -89,25 +89,25 @@ const onUploadComplete = async ({
         where: {
           id: createdFile.id,
         },
-      });
+      })
     }
 
     // vectorize and index entire document
-    const pinecone = await getPineconeClient();
-    const pineconeIndex = pinecone.Index('quill'); // Assuming 'quill' is the correct namespace
+    const pinecone = await getPineconeClient()
+    const pineconeIndex = pinecone.Index('quill')
 
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
-    });
+    })
 
     await PineconeStore.fromDocuments(
       pageLevelDocs,
       embeddings,
       {
-        pineconeIndex, // Use the pineconeIndex object here
+        pineconeIndex,
         namespace: createdFile.id,
       }
-    );
+    )
 
     await db.file.update({
       data: {
@@ -116,7 +116,7 @@ const onUploadComplete = async ({
       where: {
         id: createdFile.id,
       },
-    });
+    })
   } catch (err) {
     await db.file.update({
       data: {
@@ -125,9 +125,9 @@ const onUploadComplete = async ({
       where: {
         id: createdFile.id,
       },
-    });
+    })
   }
-};
+}
 
 export const ourFileRouter = {
   freePlanUploader: f({ pdf: { maxFileSize: '4MB' } })
@@ -136,6 +136,6 @@ export const ourFileRouter = {
   proPlanUploader: f({ pdf: { maxFileSize: '16MB' } })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
-} as FileRouter; // Use 'as FileRouter' to satisfy the FileRouter type
+} satisfies FileRouter
 
-export type OurFileRouter = typeof ourFileRouter;
+export type OurFileRouter = typeof ourFileRouter
