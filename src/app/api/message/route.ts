@@ -4,7 +4,7 @@ import { getPineconeClient } from '@/lib/pinecone';
 import { SendMessageValidator } from '@/lib/validators/SendMessageValidator';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { PineconeStore } from 'langchain/vectorstores/pinecone';
+import { VectorStore } from 'langchain/vectorstores/pinecone'; // Use "VectorStore" instead of "PineconeStore"
 import { NextRequest } from 'next/server';
 
 import { OpenAIStream, StreamingTextResponse } from 'ai';
@@ -53,7 +53,8 @@ export const POST = async (req: NextRequest) => {
   const pinecone = await getPineconeClient();
   const pineconeIndex = pinecone.Index('quill');
 
-  const vectorStore = await PineconeStore.fromExistingIndex(
+  // Use "VectorStore" here to fix the type mismatch
+  const vectorStore = await VectorStore.fromExistingIndex(
     embeddings,
     {
       pineconeIndex,
@@ -61,10 +62,7 @@ export const POST = async (req: NextRequest) => {
     }
   );
 
-  const results = await vectorStore.similaritySearch(
-    message,
-    4
-  );
+  const results = await vectorStore.similaritySearch(message, 4);
 
   const prevMessages = await db.message.findMany({
     where: {
@@ -114,7 +112,7 @@ export const POST = async (req: NextRequest) => {
   USER INPUT: ${message}`,
       },
     ],
-  })
+  });
 
   const stream = OpenAIStream(response, {
     async onCompletion(completion) {
