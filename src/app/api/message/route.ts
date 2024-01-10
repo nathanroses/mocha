@@ -15,7 +15,7 @@ export const POST = async (req: NextRequest) => {
   const body = await req.json()
 
   const { getUser } = getKindeServerSession()
-  const user = getUser()
+  const user = await getUser() // Await the promise to get the user object
 
   const { id: userId } = user
 
@@ -90,11 +90,11 @@ export const POST = async (req: NextRequest) => {
       {
         role: 'system',
         content:
-          'Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.',
+          'Use the following pieces of context (or previous conversation if needed) to answer the user\'s question in markdown format.',
       },
       {
         role: 'user',
-        content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
+        content: `Use the following pieces of context (or previous conversation if needed) to answer the user's question in markdown format. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
         
   \n----------------\n
   
