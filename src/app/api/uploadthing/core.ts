@@ -94,7 +94,7 @@ const onUploadComplete = async ({
 
     // vectorize and index entire document
     const pinecone = await getPineconeClient();
-    const pineconeIndex = pinecone.Index('quill');
+    const pineconeIndex = pinecone.Index('quill'); // Assuming 'quill' is the correct namespace
 
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
@@ -104,7 +104,7 @@ const onUploadComplete = async ({
       pageLevelDocs,
       embeddings,
       {
-        pineconeIndex,
+        pineconeIndex, // Use the pineconeIndex object here
         namespace: createdFile.id,
       }
     );
@@ -136,6 +136,6 @@ export const ourFileRouter = {
   proPlanUploader: f({ pdf: { maxFileSize: '16MB' } })
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
-} satisfies FileRouter;
+} as FileRouter; // Use 'as FileRouter' to satisfy the FileRouter type
 
 export type OurFileRouter = typeof ourFileRouter;
