@@ -19,12 +19,11 @@ const Navbar = () => {
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
       <MaxWidthWrapper>
         <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
-          <Link href='/'>
-            <a className='flex z-40 font-semibold'>
-              {/* Optimized Logo Image */}
-              <Image src='/ce.png' alt='Logo' width={50} height={50} />
-            </a>
-          </Link>
+        <Link href='/' className='flex z-40 font-semibold'>
+        {/* Optimized Logo Image */}
+        <Image src='/ce.png' alt='Logo' width={80} height={80} />
+        </Link>
+
 
           <MobileNav isAuth={!!user} />
 
