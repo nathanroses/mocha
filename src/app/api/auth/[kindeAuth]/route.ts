@@ -1,18 +1,24 @@
 import { handleAuth } from '@kinde-oss/kinde-auth-nextjs/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
+// Function to handle GET requests
+export async function get(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Construct an options object. The actual structure depends on handleAuth's requirements.
+  // Assuming handleAuth requires an options object
   const options = {
-    // Example property - replace with actual required properties
     endpoint: req.query.kindeAuth as string,
+    // Include other properties as required by handleAuth
   };
 
-  // Call handleAuth with the options object.
-  await handleAuth(options);
+  try {
+    // Call handleAuth with the options object
+    await handleAuth(options);
 
-  // Since handleAuth should handle the response, no need to send a response here.
+    // handleAuth should manage the response
+  } catch (error) {
+    // Handle any errors
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
