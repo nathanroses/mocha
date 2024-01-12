@@ -29,12 +29,12 @@ type KindeUser = {
 };
 
 const Page = () => {
-  const { getUser } = getKindeServerSession()
+  const { getUser } = getKindeServerSession();
   const [user, setUser] = useState<KindeUser | null>(null); // Specify the type here
 
   useEffect(() => {
-    getUser().then(userData => setUser(userData))
-  }, [getUser])
+    getUser().then(userData => setUser(userData));
+  }, [getUser]);
 
   const pricingItems = [
     {
@@ -93,10 +93,14 @@ const Page = () => {
   ];
 
   return (
-    <>
-
-    </>
-  )
+    <div>
+      <MaxWidthWrapper>
+        {/* Your content here */}
+        <h1>Welcome to your pricing page</h1>
+        {/* You can map through pricingItems and render your pricing cards here */}
+      </MaxWidthWrapper>
+    </div>
+  );
 }
 
-export default Page
+export default Page;
