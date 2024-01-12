@@ -22,9 +22,15 @@ import { useEffect, useState } from 'react'
 // Add the "use client" pragma to mark this component as a Client Component
 /** @jsxImportSource @react/server-web-client/client */
 
+// Define the type for your user data (KindeUser)
+type KindeUser = {
+  // Define the properties of KindeUser here
+  // For example: name, email, etc.
+};
+
 const Page = () => {
   const { getUser } = getKindeServerSession()
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<KindeUser | null>(null); // Specify the type here
 
   useEffect(() => {
     getUser().then(userData => setUser(userData))
@@ -88,10 +94,7 @@ const Page = () => {
 
   return (
     <>
-      <MaxWidthWrapper className='mb-8 mt-24 text-center max-w-5xl'>
-        {/* Your JSX code for rendering the pricing page */}
-        {/* Utilize 'pricingItems' and 'user' state variable as needed */}
-      </MaxWidthWrapper>
+
     </>
   )
 }
