@@ -19,6 +19,9 @@ import {
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
+// Add the "use client" pragma to mark this component as a Client Component
+/** @jsxImportSource @react/server-web-client/client */
+
 const Page = () => {
   const { getUser } = getKindeServerSession()
   const [user, setUser] = useState(null)
