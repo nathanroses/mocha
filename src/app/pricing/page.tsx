@@ -1,46 +1,26 @@
-import MaxWidthWrapper from '@/components/MaxWidthWrapper';
-import UpgradeButton from '@/components/UpgradeButton';
-import { buttonVariants } from '@/components/ui/button';
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
+import UpgradeButton from '@/components/UpgradeButton'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { PLANS } from '@/config/stripe';
-import { cn } from '@/lib/utils';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+} from '@/components/ui/tooltip'
+import { PLANS } from '@/config/stripe'
+import { cn } from '@/lib/utils'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import {
   ArrowRight,
   Check,
   HelpCircle,
   Minus,
-} from 'lucide-react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-
-// Define the type for your user data (KindeUser)
-type KindeUser = {
-  // Define the properties of KindeUser here
-  // For example: name, email, etc.
-};
+} from 'lucide-react'
+import Link from 'next/link'
 
 const Page = () => {
-  const { getUser } = getKindeServerSession();
-  const [user, setUser] = useState<KindeUser | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await getUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      }
-    };
-
-    fetchUser();
-  }, [getUser]);
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
 
   const pricingItems = [
     {
@@ -50,18 +30,21 @@ const Page = () => {
       features: [
         {
           text: '5 pages per PDF',
-          footnote: 'The maximum amount of pages per PDF-file.',
+          footnote:
+            'The maximum amount of pages per PDF-file.',
         },
         {
           text: '4MB file size limit',
-          footnote: 'The maximum file size of a single PDF file.',
+          footnote:
+            'The maximum file size of a single PDF file.',
         },
         {
           text: 'Mobile-friendly interface',
         },
         {
           text: 'Higher-quality responses',
-          footnote: 'Better algorithmic responses for enhanced content quality',
+          footnote:
+            'Better algorithmic responses for enhanced content quality',
           negative: true,
         },
         {
@@ -77,26 +60,28 @@ const Page = () => {
       features: [
         {
           text: '25 pages per PDF',
-          footnote: 'The maximum amount of pages per PDF-file.',
+          footnote:
+            'The maximum amount of pages per PDF-file.',
         },
         {
           text: '16MB file size limit',
-          footnote: 'The maximum file size of a single PDF file.',
+          footnote:
+            'The maximum file size of a single PDF file.',
         },
         {
           text: 'Mobile-friendly interface',
         },
         {
           text: 'Higher-quality responses',
-          footnote: 'Better algorithmic responses for enhanced content quality',
+          footnote:
+            'Better algorithmic responses for enhanced content quality',
         },
         {
           text: 'Priority support',
         },
       ],
     },
-    // ... other plans if available
-  ];
+  ]
 
   return (
     <>
@@ -118,7 +103,7 @@ const Page = () => {
                 const price =
                   PLANS.find(
                     (p) => p.slug === plan.toLowerCase()
-                  )?.price.amount || 0;
+                  )?.price.amount || 0
 
                 return (
                   <div
@@ -251,14 +236,14 @@ const Page = () => {
                       )}
                     </div>
                   </div>
-                );
+                )
               }
             )}
           </TooltipProvider>
         </div>
       </MaxWidthWrapper>
     </>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

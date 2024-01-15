@@ -16,7 +16,7 @@ const f = createUploadthing()
 
 const middleware = async () => {
   const { getUser } = getKindeServerSession()
-  const user = await getUser() // Corrected with await
+  const user = getUser()
 
   if (!user || !user.id) throw new Error('Unauthorized')
 
@@ -58,9 +58,13 @@ const onUploadComplete = async ({
     const response = await fetch(
       `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`
     )
+
     const blob = await response.blob()
+
     const loader = new PDFLoader(blob)
+
     const pageLevelDocs = await loader.load()
+
     const pagesAmt = pageLevelDocs.length
 
     const { subscriptionPlan } = metadata
@@ -71,9 +75,13 @@ const onUploadComplete = async ({
       PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
     const isFreeExceeded =
       pagesAmt >
-      PLANS.find((plan) => plan.name === 'Free')!.pagesPerPdf
+      PLANS.find((plan) => plan.name === 'Free')!
+        .pagesPerPdf
 
-    if ((isSubscribed && isProExceeded) || (!isSubscribed && isFreeExceeded)) {
+    if (
+      (isSubscribed && isProExceeded) ||
+      (!isSubscribed && isFreeExceeded)
+    ) {
       await db.file.update({
         data: {
           uploadStatus: 'FAILED',
@@ -82,11 +90,11 @@ const onUploadComplete = async ({
           id: createdFile.id,
         },
       })
-      return
     }
 
+    // vectorize and index entire document
     const pinecone = await getPineconeClient()
-    const pineconeIndex = pinecone.Index('quill') as any; // Added type assertion
+    const pineconeIndex = pinecone.Index('quill')
 
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
@@ -110,7 +118,6 @@ const onUploadComplete = async ({
       },
     })
   } catch (err) {
-    console.error(err);
     await db.file.update({
       data: {
         uploadStatus: 'FAILED',
