@@ -54,7 +54,7 @@ const Page = () => {
       ],
     },
     {
-      plan: 'Pro',
+      plan: 'Buisness',
       tagline: 'For larger projects with higher needs.',
       quota: PLANS.find((p) => p.slug === 'pro')!.quota,
       features: [
@@ -111,7 +111,7 @@ const Page = () => {
                     className={cn(
                       'relative rounded-2xl bg-white shadow-lg',
                       {
-                        'border-2 border-blue-600 shadow-blue-200':
+                        'border-2 border-pink-600 shadow-pink-200':
                           plan === 'Pro',
                         'border border-gray-200':
                           plan !== 'Pro',
@@ -167,7 +167,7 @@ const Page = () => {
                               {negative ? (
                                 <Minus className='h-6 w-6 text-gray-300' />
                               ) : (
-                                <Check className='h-6 w-6 text-blue-500' />
+                                <Check className='h-6 w-6 text-pink-500' />
                               )}
                             </div>
                             {footnote ? (
