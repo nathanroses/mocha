@@ -111,9 +111,9 @@ const Page = () => {
                     className={cn(
                       'relative rounded-2xl bg-white shadow-lg',
                       {
-                        'border-2 border-pink-600 shadow-pink-200':
+                        'border-2 border-pink-400 shadow-pink-200':
                           plan === 'Pro',
-                        'border border-gray-200':
+                        'border border-pink-200':
                           plan !== 'Pro',
                       }
                     )}>
