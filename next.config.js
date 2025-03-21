@@ -21,8 +21,15 @@ const nextConfig = {
   ) => {
     config.resolve.alias.canvas = false
     config.resolve.alias.encoding = false
+    
+    // Add additional problematic packages here if needed
+    // Example: config.resolve.alias['package-name'] = false
+    
     return config
   },
+  
+  // Add this option to ignore specific modules
+  transpilePackages: ['pdf-parse'],
 }
 
 module.exports = nextConfig
