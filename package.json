@@ -70,9 +70,11 @@
     "typescript": "5.2.2"
   },
   "resolutions": {
-    "canvas": "2.11.2"
+    "canvas": "2.11.2",
+    "pdfjs-dist/canvas": "2.11.2",
+    "react-pdf/pdfjs-dist": "3.4.120"
   },
   "optionalDependencies": {
-  "canvas": "*"
-}
+    "canvas": "*"
+  }
 }
