@@ -70,18 +70,18 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                     <Link
                       onClick={toggleOpen}
                       className='flex items-center w-full font-medium text-lg text-gray-800 hover:text-blue-600 transition-colors'
-                      href='/sign-in'>
+                      href='/api/auth/login'>
                       Sign in
                     </Link>
                   </li>
                   <li>
-<Link
-  onClick={toggleOpen}
-  className='mt-4 flex items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 transition-colors'
-  href='/sign-up'>
-  Sign up
-  <ArrowRight className='ml-2 h-5 w-5' />
-</Link>
+                    <Link
+                      onClick={toggleOpen}
+                      className='mt-4 flex items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 transition-colors'
+                      href='/api/auth/register'>
+                      Sign up
+                      <ArrowRight className='ml-2 h-5 w-5' />
+                    </Link>
                   </li>
                 </>
               ) : (
@@ -107,7 +107,7 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                     <Link
                       onClick={toggleOpen}
                       className='flex items-center w-full font-medium text-lg text-gray-800 hover:text-blue-600 transition-colors'
-                      href='/sign-out'>
+                      href='/api/auth/logout'>
                       Sign out
                     </Link>
                   </li>
