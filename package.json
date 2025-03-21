@@ -66,5 +66,8 @@
     "@types/react": "18.2.22",
     "prisma": "^5.7.0",
     "typescript": "5.2.2"
+  },
+  "overrides": {
+    "canvas": false
   }
 }
