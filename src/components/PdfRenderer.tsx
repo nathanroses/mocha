@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 import { Button } from './ui/button'
-import { Input } from './ui/input'
 import { 
   ChevronDown, 
   ChevronUp, 
   ExternalLink,
   ZoomIn, 
   ZoomOut,
-  RotateCw
+  RotateCw,
+  Expand
 } from 'lucide-react'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 
@@ -23,12 +23,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   
   // Create URL with scale and rotation parameters
   const getViewerUrl = () => {
-    const baseUrl = url
-    const params = new URLSearchParams()
-    params.append('zoom', (scale/100).toString())
-    
-    // Since we're using viewer parameters, we construct the URL accordingly
-    return `${baseUrl}#zoom=${scale/100}&rotate=${rotation}`
+    return `${url}#zoom=${scale/100}&rotate=${rotation}`
   }
 
   return (
@@ -89,7 +84,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
       {/* PDF Viewer - uses iframe but refreshes when zoom/rotation changes */}
       <div className='flex-1 w-full'>
         <iframe
-          key={`${scale}-${rotation}`} // Force refresh when these change
+          key={`${scale}-${rotation}`}
           src={getViewerUrl()}
           className='w-full h-[calc(100vh-10rem)]'
           title="PDF document"
@@ -117,12 +112,7 @@ const PdfFullscreen = ({ fileUrl }: { fileUrl: string }) => {
           size='sm'
           className='gap-1.5'
           aria-label='fullscreen'>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <polyline points="9 21 3 21 3 15"></polyline>
-            <line x1="21" y1="3" x2="14" y2="10"></line>
-            <line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
+          <Expand className='h-4 w-4' />
         </Button>
       </DialogTrigger>
       <DialogContent className='max-w-7xl w-full h-[95vh]'>
@@ -130,13 +120,12 @@ const PdfFullscreen = ({ fileUrl }: { fileUrl: string }) => {
           src={fileUrl}
           className='w-full h-full'
           title="PDF document fullscreen"
+          style={{
+            border: 'none'
+          }}
         />
       </DialogContent>
     </Dialog>
-  )
-}
-
-export default PdfRenderer
   )
 }
 
