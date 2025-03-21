@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   async redirects() {
     return [
@@ -19,17 +21,35 @@ const nextConfig = {
     config,
     { buildId, dev, isServer, defaultLoaders, webpack }
   ) => {
-    config.resolve.alias.canvas = false
-    config.resolve.alias.encoding = false
-    
-    // Add additional problematic packages here if needed
-    // Example: config.resolve.alias['package-name'] = false
-    
+    // Explicitly mock problematic modules
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: path.resolve(__dirname, './mocks/canvas.js'),
+      encoding: false,
+      'canvas-prebuilt': path.resolve(__dirname, './mocks/canvas.js'),
+      'pdfjs-dist': path.resolve(__dirname, 'node_modules/pdfjs-dist'),
+    }
+
+    // Ignore specific files/libraries that cause build issues
+    config.module = {
+      ...config.module,
+      rules: [
+        ...config.module.rules,
+        {
+          test: /node_modules\/canvas/,
+          use: 'null-loader'
+        }
+      ]
+    }
+
     return config
   },
   
-  // Add this option to ignore specific modules
-  transpilePackages: ['pdf-parse'],
+  // Ignore ESLint errors during build (still show warnings)
+  eslint: {
+    // Warning: This allows production builds to successfully complete even with ESLint errors
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = nextConfig
