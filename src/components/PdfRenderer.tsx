@@ -1,42 +1,30 @@
 'use client'
 
-import {
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  RotateCw,
-  Search,
-  ZoomIn,
-  ZoomOut,
-  Maximize
-} from 'lucide-react'
-import { Document, Page, pdfjs } from 'react-pdf'
-
-import 'react-pdf/dist/Page/AnnotationLayer.css'
-import 'react-pdf/dist/Page/TextLayer.css'
-import { useToast } from './ui/use-toast'
-
+import { useState } from 'react'
+import { Document, Page } from 'react-pdf'
 import { useResizeDetector } from 'react-resize-detector'
+import { useToast } from './ui/use-toast'
+import SimpleBar from 'simplebar-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { useState } from 'react'
-
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-import { zodResolver } from '@hookform/resolvers/zod'
+import { 
+  ChevronDown, 
+  ChevronUp, 
+  Loader2, 
+  RotateCw, 
+  ZoomIn, 
+  ZoomOut 
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu'
-
-import SimpleBar from 'simplebar-react'
 import PdfFullscreen from './PdfFullscreen'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
+// Import PDF worker dynamically
+import { pdfjs } from 'react-pdf'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
+
+// Set worker URL
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
 
 interface PdfRendererProps {
   url: string
@@ -44,64 +32,17 @@ interface PdfRendererProps {
 
 const PdfRenderer = ({ url }: PdfRendererProps) => {
   const { toast } = useToast()
-
   const [numPages, setNumPages] = useState<number>()
   const [currPage, setCurrPage] = useState<number>(1)
   const [scale, setScale] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
-  const [renderedScale, setRenderedScale] = useState<number | null>(null)
-
-  const isLoading = renderedScale !== scale
-
-  const CustomPageValidator = z.object({
-    page: z
-      .string()
-      .refine(
-        (num) => Number(num) > 0 && Number(num) <= numPages!
-      ),
-  })
-
-  type TCustomPageValidator = z.infer<typeof CustomPageValidator>
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm<TCustomPageValidator>({
-    defaultValues: {
-      page: '1',
-    },
-    resolver: zodResolver(CustomPageValidator),
-  })
-
+  const [isLoading, setIsLoading] = useState(true)
   const { width, ref } = useResizeDetector()
 
-  const handlePageSubmit = ({ page }: TCustomPageValidator) => {
-    setCurrPage(Number(page))
-    setValue('page', String(page))
-  }
-
-  const nextPage = () => {
-    if (currPage + 1 <= numPages!) {
-      setCurrPage(currPage + 1)
-      setValue('page', String(currPage + 1))
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= (numPages || 1)) {
+      setCurrPage(newPage)
     }
-  }
-
-  const prevPage = () => {
-    if (currPage - 1 >= 1) {
-      setCurrPage(currPage - 1)
-      setValue('page', String(currPage - 1))
-    }
-  }
-
-  const zoomIn = () => {
-    setScale((prev) => Math.min(prev + 0.1, 2))
-  }
-
-  const zoomOut = () => {
-    setScale((prev) => Math.max(prev - 0.1, 0.5))
   }
 
   return (
@@ -113,7 +54,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           <div className='flex items-center gap-1.5'>
             <Button
               disabled={currPage <= 1}
-              onClick={prevPage}
+              onClick={() => handlePageChange(currPage - 1)}
               variant='ghost'
               size='sm'
               aria-label='previous page'>
@@ -122,14 +63,16 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
 
             <div className='flex items-center gap-1.5'>
               <Input
-                {...register('page')}
-                className={cn(
-                  'w-14 h-8',
-                  errors.page && 'focus-visible:ring-red-500'
-                )}
+                value={currPage}
+                onChange={(e) => {
+                  const page = parseInt(e.target.value)
+                  if (!isNaN(page)) handlePageChange(page)
+                }}
+                className='w-14 h-8'
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    handleSubmit(handlePageSubmit)()
+                    const page = parseInt((e.target as HTMLInputElement).value)
+                    if (!isNaN(page)) handlePageChange(page)
                   }
                 }}
               />
@@ -141,7 +84,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
 
             <Button
               disabled={numPages === undefined || currPage === numPages}
-              onClick={nextPage}
+              onClick={() => handlePageChange(currPage + 1)}
               variant='ghost'
               size='sm'
               aria-label='next page'>
@@ -154,7 +97,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           {/* Zoom controls */}
           <div className='flex items-center'>
             <Button
-              onClick={zoomOut}
+              onClick={() => setScale((prev) => Math.max(prev - 0.1, 0.5))}
               variant='ghost'
               size='sm'
               aria-label='zoom out'>
@@ -166,7 +109,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             </span>
             
             <Button
-              onClick={zoomIn}
+              onClick={() => setScale((prev) => Math.min(prev + 0.1, 2))}
               variant='ghost' 
               size='sm'
               aria-label='zoom in'>
@@ -198,39 +141,30 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
                   <Loader2 className='my-24 h-6 w-6 animate-spin' />
                 </div>
               }
+              onLoadSuccess={({ numPages }) => {
+                setNumPages(numPages)
+                setIsLoading(false)
+              }}
               onLoadError={() => {
                 toast({
                   title: 'Error loading PDF',
                   description: 'Please try again later',
                   variant: 'destructive',
                 })
+                setIsLoading(false)
               }}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
               file={url}
               className='max-h-full'>
-              {isLoading && renderedScale ? (
-                <Page
-                  width={width ? width : 1}
-                  pageNumber={currPage}
-                  scale={scale}
-                  rotate={rotation}
-                  key={'@' + renderedScale}
-                />
-              ) : null}
-
               <Page
-                className={cn(isLoading ? 'hidden' : '')}
                 width={width ? width : 1}
                 pageNumber={currPage}
                 scale={scale}
                 rotate={rotation}
-                key={'@' + scale}
                 loading={
                   <div className='flex justify-center'>
                     <Loader2 className='my-24 h-6 w-6 animate-spin' />
                   </div>
                 }
-                onRenderSuccess={() => setRenderedScale(scale)}
               />
             </Document>
           </div>
