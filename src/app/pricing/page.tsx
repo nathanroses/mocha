@@ -117,11 +117,13 @@ const Page = () => {
                       'border-gray-200': !isPro,
                     }
                   )}>
+
                   {isPro && (
-                    <div className='absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-sm font-medium text-white'>
-                      Most Popular
+                    <div className='absolute -top-4 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-sm font-medium text-white shadow-md'>
+                     Most Popular
                     </div>
-                  )}
+                   )}
+
 
                   <div className='p-5'>
                     <h3 className='my-3 text-center font-display text-3xl font-bold'>
