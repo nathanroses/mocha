@@ -14,17 +14,6 @@ const nextConfig = {
       },
     ]
   },
-
-  webpack: (config) => {
-    // Handle canvas module
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      canvas: false,
-      'pdfjs-dist/lib/canvas': false,
-    }
-    
-    return config
-  },
   
   // Ignore ESLint errors during build
   eslint: {
