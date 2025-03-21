@@ -115,18 +115,20 @@ export const POST = async (req: NextRequest) => {
     ],
   })
 
-  const stream = OpenAIStream(response, {
-    async onCompletion(completion) {
-      await db.message.create({
-        data: {
-          text: completion,
-          isUserMessage: false,
-          fileId,
-          userId,
-        },
-      })
-    },
-  })
+// Updated to fix type issue:
+const stream = OpenAIStream(response as any, {
+  async onCompletion(completion) {
+    await db.message.create({
+      data: {
+        text: completion,
+        isUserMessage: false,
+        fileId,
+        userId,
+      },
+    })
+  },
+})
+
 
   return new StreamingTextResponse(stream)
 }
