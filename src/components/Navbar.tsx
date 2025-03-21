@@ -9,20 +9,20 @@ import {
 import { ArrowRight } from 'lucide-react';
 import UserAccountNav from './UserAccountNav';
 import MobileNav from './MobileNav';
-import Image from 'next/image'; // Import the Image component from 'next/image'
+import Image from 'next/image';
 
 const Navbar = () => {
   const { getUser } = getKindeServerSession();
   const user = getUser();
 
   return (
-    <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
+    <nav className='sticky h-16 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
       <MaxWidthWrapper>
-        <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
-          <Link href='/' className='flex z-40 font-semibold'>
-            {/* Increased padding values and correct logo path */}
-            <div className="px-6 py-3"> {/* Adjust these values as needed */}
-              <Image src='/mocha.png' alt='Your Logo' width={60} height={50} />
+        <div className='flex h-16 items-center justify-between'>
+          <Link href='/' className='flex items-center gap-2 z-40'>
+            <div className="flex items-center">
+              <Image src='/mocha.png' alt='Mocha Logo' width={40} height={40} className="mr-2" />
+              <span className="font-semibold text-xl text-gray-800">Mocha</span>
             </div>
           </Link>
 
@@ -51,7 +51,7 @@ const Navbar = () => {
                     size: 'sm',
                   })}>
                   Get started{' '}
-                  <ArrowRight className='ml-1.5 h-5 w-5' />
+                  <ArrowRight className='ml-1.5 h-4 w-4' />
                 </RegisterLink>
               </>
             ) : (
@@ -80,7 +80,7 @@ const Navbar = () => {
         </div>
       </MaxWidthWrapper>
     </nav>
-  )
-}
+  );
+};
 
 export default Navbar;
