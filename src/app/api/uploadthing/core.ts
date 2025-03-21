@@ -12,10 +12,22 @@ import { getPineconeClient } from '@/lib/pinecone'
 import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { PLANS } from '@/config/stripe'
 
-// Import the PDFLoader differently
-// near the top of the file
 // Import the Document class
 import { Document } from 'langchain/document'
+
+const f = createUploadthing()
+
+// Define middleware function - this was missing in your code
+const middleware = async () => {
+  const { getUser } = getKindeServerSession()
+  const user = getUser()
+
+  if (!user || !user.id) throw new Error('Unauthorized')
+
+  const subscriptionPlan = await getUserSubscriptionPlan()
+
+  return { subscriptionPlan, userId: user.id }
+}
 
 // Add this mock class 
 class MockPineconeStore {
