@@ -21,7 +21,4 @@ Built with the Next.js 13.5 App Router, tRPC, TypeScript, Prisma & Tailwind
 - 🧠 LangChain for Infinite AI Memory
 - 🌲 Pinecone as our Vector Storage
 - 📊 Prisma as our ORM
-- 🔤 100% written in TypeScript
-- 🎁 ...much more
 
-## Getting started
