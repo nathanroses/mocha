@@ -19,6 +19,10 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // Add this to fix image loading issues
+  images: {
+    domains: ['uploadthing-prod.s3.us-west-2.amazonaws.com'],
+  },
 }
 
 module.exports = nextConfig
