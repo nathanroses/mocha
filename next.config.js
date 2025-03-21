@@ -1,19 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/sign-in',
-        destination: '/api/auth/login',
-        permanent: true,
-      },
-      {
-        source: '/sign-up',
-        destination: '/api/auth/register',
-        permanent: true,
-      },
-    ]
-  },
+  // Removed redirects as we're linking directly to /api/auth/* endpoints
   
   // Ignore ESLint errors during build
   eslint: {
