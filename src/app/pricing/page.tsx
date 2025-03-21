@@ -111,14 +111,14 @@ const Page = () => {
                 <div
                   key={plan}
                   className={cn(
-                    'relative rounded-2xl bg-white shadow-lg border-2 overflow-hidden pt-6',
+                    'relative rounded-2xl bg-white shadow-lg border-2 overflow-hidden mt-8',
                     {
                       'border-blue-600 shadow-blue-200': isPro,
                       'border-gray-200': !isPro,
                     }
                   )}>
                   {isPro && (
-                    <div className='absolute -top-6 left-0 right-0 mx-auto w-36 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-md'>
+                    <div className='absolute top-0 left-0 right-0 mx-auto w-40 rounded-b-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-md'>
                       Most Popular
                     </div>
                   )}
@@ -259,3 +259,4 @@ const Page = () => {
 }
 
 export default Page
+
