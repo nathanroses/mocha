@@ -72,7 +72,7 @@
   "resolutions": {
     "canvas": "2.11.2"
   },
-  "overrides": {
-    "canvas": "2.11.2"
-  }
+  "optionalDependencies": {
+  "canvas": "*"
+}
 }
