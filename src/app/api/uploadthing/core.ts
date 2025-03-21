@@ -64,12 +64,24 @@ const onUploadComplete = async ({
 
     const blob = await response.blob()
     
-    // Use web PDF loader that doesn't depend on canvas
-    const loader = new PDFLoader(blob)
+// Simple approach to create LangChain documents without using PDFLoader
+const text = await blob.text()
+const pageLevelDocs = [
+  new Document({
+    pageContent: text,
+    metadata: {
+      source: file.name,
+      pdf: {
+        version: "simplified",
+        info: {
+          Title: file.name,
+        }
+      }
+    }
+  })
+]
 
-    const pageLevelDocs = await loader.load()
-
-    const pagesAmt = pageLevelDocs.length
+const pagesAmt = pageLevelDocs.length
 
     const { subscriptionPlan } = metadata
     const { isSubscribed } = subscriptionPlan
