@@ -111,19 +111,17 @@ const Page = () => {
                 <div
                   key={plan}
                   className={cn(
-                    'relative rounded-2xl bg-white shadow-lg border-2 overflow-hidden',
+                    'relative rounded-2xl bg-white shadow-lg border-2 overflow-hidden pt-6',
                     {
                       'border-blue-600 shadow-blue-200': isPro,
                       'border-gray-200': !isPro,
                     }
                   )}>
-
                   {isPro && (
-                    <div className='absolute -top-4 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-sm font-medium text-white shadow-md'>
-                     Most Popular
+                    <div className='absolute -top-6 left-0 right-0 mx-auto w-36 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-md'>
+                      Most Popular
                     </div>
-                   )}
-
+                  )}
 
                   <div className='p-5'>
                     <h3 className='my-3 text-center font-display text-3xl font-bold'>
@@ -213,7 +211,7 @@ const Page = () => {
                     {plan === 'Free' ? (
                       <Link
                         href={
-                          user ? '/dashboard' : '/sign-in'
+                          user ? '/dashboard' : '/api/auth/register'
                         }
                         className={buttonVariants({
                           className: 'w-full',
@@ -226,7 +224,7 @@ const Page = () => {
                       <UpgradeButton />
                     ) : (
                       <Link
-                        href='/sign-in'
+                        href='/api/auth/register'
                         className={buttonVariants({
                           className: 'w-full',
                         })}>
