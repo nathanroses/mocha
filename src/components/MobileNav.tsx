@@ -75,13 +75,13 @@ const MobileNav = ({ isAuth }: { isAuth: boolean }) => {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      onClick={toggleOpen}
-                      className='mt-4 flex items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 transition-colors'
-                      href='/sign-up'>
-                      Get started
-                      <ArrowRight className='ml-2 h-5 w-5' />
-                    </Link>
+<Link
+  onClick={toggleOpen}
+  className='mt-4 flex items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 transition-colors'
+  href='/sign-up'>
+  Sign up
+  <ArrowRight className='ml-2 h-5 w-5' />
+</Link>
                   </li>
                 </>
               ) : (
