@@ -41,10 +41,8 @@
     "langchain": "^0.0.153",
     "lucide-react": "^0.279.0",
     "next": "^13.5.6",
-    "null-loader": "^4.0.1",
     "openai": "^4.20.1",
     "pdf-parse": "^1.1.1",
-    "pinecone": "^0.1.0",
     "postcss": "^8.4.32",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -68,13 +66,5 @@
     "@types/react": "18.2.22",
     "prisma": "^5.7.0",
     "typescript": "5.2.2"
-  },
-  "resolutions": {
-    "canvas": "2.11.2",
-    "pdfjs-dist/canvas": "2.11.2",
-    "react-pdf/pdfjs-dist": "3.4.120"
-  },
-  "optionalDependencies": {
-    "canvas": "*"
   }
 }
