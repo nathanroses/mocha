@@ -13,7 +13,7 @@ import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { PLANS } from '@/config/stripe'
 
 // Import the PDFLoader differently
-import { PDFLoader } from 'langchain/document_loaders/web/pdf'
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 
 const f = createUploadthing()
 
