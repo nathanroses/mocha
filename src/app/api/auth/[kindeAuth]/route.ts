@@ -3,7 +3,15 @@ import { NextRequest } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: any
+  { params }: { params: { kindeAuth: string } }
+) {
+  const endpoint = params.kindeAuth
+  return handleAuth(request, endpoint)
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { kindeAuth: string } }
 ) {
   const endpoint = params.kindeAuth
   return handleAuth(request, endpoint)
